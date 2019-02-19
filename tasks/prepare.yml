@@ -1,0 +1,55 @@
+---
+- name: Install dependent packages
+  yum:
+    name: "{{ item }}"
+    state: installed
+  with_items:
+    - libvirt-python
+    - python-lxml
+
+- name: Download vmlinuz to boot
+  get_url:
+    url: "{{ virt_guest_os_location }}/images/pxeboot/vmlinuz"
+    dest: "/var/lib/libvirt/boot/virtguestinst-vmlinuz"
+    force: yes
+
+- name: Download initrd to boot
+  get_url:
+    url: "{{ virt_guest_os_location }}/images/pxeboot/initrd.img"
+    dest: "/var/lib/libvirt/boot/virtguestinst-initrd.img"
+    force: yes
+
+- name: Set disk(s) list
+  set_fact:
+    virt_guest_disk_list: '{{ virt_guest_disk_list|default([]) | union (item.value.disk | list) }}'
+  with_dict: "{{ virt_guest_list }}"
+  loop_control:
+    label: "{{ item.value.disk }}"
+
+- include_tasks: prepare-disks.yml
+  with_items: 
+    - "{{ virt_guest_disk_list }}"
+  loop_control:
+    loop_var: device
+
+- name: Define a new network(s)
+  virt_net:
+    command: define
+    name: "{{ item.key }}"
+    xml: '{{ lookup("template", "vm-network.xml.j2") }}'
+  with_dict: "{{ virt_network_list }}"
+  when: "{{ item.key is defined }}"
+
+- name: Start a new network(s)
+  virt_net:
+    state: active
+    name: "{{ item.key }}"
+  with_dict: "{{ virt_network_list }}"
+  when: "{{ item.key is defined }}"
+
+- name: Enable autostart for a new network(s)
+  virt_net:
+    autostart: yes
+    name: "{{ item.key }}"
+  with_dict: "{{ virt_network_list }}"
+  when: "{{ item.key is defined }}"

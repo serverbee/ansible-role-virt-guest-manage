@@ -1,0 +1,68 @@
+---
+- name: Check if virtual maschine(s) exists
+  virt:
+    command: list_vms
+  register: result
+
+- name: Create virtual maschine(s)
+  virt:
+    name: "{{ item.key }}"
+    command: define
+    xml: "{{ lookup('template', 'vm-install-template.xml.j2') }}"
+  when: not result.list_vms | join('') | search('{{ item.key }}')
+  with_dict: "{{ virt_guest_list }}"
+
+- name: Start installation of virtual maschine(s)
+  virt:
+    name: "{{ item.key }}"
+    state: running
+  when: not result.list_vms | join('') | search('{{ item.key }}')
+  with_dict: "{{ virt_guest_list }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Wait to finish installation
+  virt:
+    name: "{{ item.key }}"
+    command: status
+  register: vm
+  until: vm.status == "shutdown"
+  retries: 100
+  delay: 10
+  when: not result.list_vms | join('') | search('{{ item.key }}')
+  with_dict: "{{ virt_guest_list }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Undefine installation xml of virtual maschine(s)
+  virt:
+    name: "{{ item.key }}"
+    command: undefine
+  when: not result.list_vms | join('') | search('{{ item.key }}')
+  with_dict: "{{ virt_guest_list }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Define non installation xml for virtual maschine(s)
+  virt:
+    name: "{{ item.key }}"
+    command: define
+    xml: "{{ lookup('template', 'vm-template.xml.j2') }}"
+  with_dict: "{{ virt_guest_list }}"
+
+- name: Start virtual maschine(s)
+  virt:
+    name: "{{ item.key }}"
+    state: running
+  with_dict: "{{ virt_guest_list }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Enable autostart for virtual maschine(s)
+  virt:
+    name: "{{ item.key }}"
+    command: status
+    autostart: true
+  with_dict: "{{ virt_guest_list }}"
+  loop_control:
+    label: "{{ item.key }}"

@@ -1,0 +1,5 @@
+---
+
+- include: prepare.yml
+- include: configure_vm.yml
+

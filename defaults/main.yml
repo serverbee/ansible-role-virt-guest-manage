@@ -1,0 +1,27 @@
+---
+
+virt_guest_mirror: http://mirror.eu.oneandone.net/linux/distributions
+virt_guest_os_location: "{{ virt_guest_mirror }}/centos/7/os/x86_64/"
+
+virt_qemu_images_location: "/var/lib/libvirt/images"
+
+virt_network_list: {}
+#  br-nat0:
+#    router: 192.168.2.1
+#    netmask: 255.255.255.0
+#    start: 192.168.2.2
+#    end: 192.168.2.254
+
+virt_guest_list: {}
+#  example-vm:
+#    uuid: 7eb09567-83b8-4aab-916e-24924d6a0f89
+#    disk:
+#      sda:
+#        vg: vg_local
+#        lv: lv_vm_example
+#        size: 10G
+#    network:
+#      eth0:
+#        mac: 52:54:00:16:01:bc
+#        bridge: br0
+#    ks: https://example.com/rhel7-ks.cfg

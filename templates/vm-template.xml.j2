@@ -1,0 +1,127 @@
+<domain type='kvm'>
+  <name>{{ item.key }}</name>
+  <uuid>{{ item.value.uuid }}</uuid>
+  <memory unit='KiB'>{{ item.value.ram | default('2') * 1024 * 1024 }}</memory>
+  <currentMemory unit='KiB'>{{ item.value.ram | default('2') * 1024 * 1024 }}</currentMemory>
+  <vcpu placement='static'>{{ item.value.cpu }}</vcpu>
+  <os>
+{% if ansible_distribution == "Fedora" %}
+    <type>hvm</type>
+{% endif %}
+{% if ansible_distribution_major_version == "6" %}
+    <type arch='x86_64' machine='rhel6.6.0'>hvm</type>
+{% endif %}
+{% if ansible_distribution_major_version == "7" %}
+    <type arch='x86_64' machine='pc-i440fx-rhel7.4.0'>hvm</type>
+{% endif %}
+    <boot dev='hd'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+  </features>
+  <cpu mode='host-passthrough'/>
+  <clock offset='utc'>
+    <timer name='rtc' tickpolicy='catchup'/>
+    <timer name='pit' tickpolicy='delay'/>
+    <timer name='hpet' present='no'/>
+  </clock>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>destroy</on_crash>
+  <pm>
+    <suspend-to-mem enabled='no'/>
+    <suspend-to-disk enabled='no'/>
+  </pm>
+  <devices>
+{% if ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS' %}
+    <emulator>/usr/libexec/qemu-kvm</emulator>
+{% elif ansible_distribution == "Fedora" %}
+    <emulator>/usr/bin/qemu-kvm</emulator>
+{% endif %}
+{% if item.value.disk is defined %}
+{% for key, value in  item.value.disk.iteritems()%}
+    <disk type='{{ value.type | default('block') }}' device='disk'>
+{% if key[:-1] == 'sd' %}
+      <driver name='qemu' type='{{ value.format | default('raw') }}' cache='none' io='native' discard='unmap'/>
+{% elif key[:-1] == 'vd' %}
+      <driver name='qemu' type='{{ value.format | default('raw') }}' cache='none' io='native'/>
+{% endif %}
+{% if value.type | default('block') == "block" %}
+      <source dev='/dev/{{ value.vg }}/{{ value.lv }}'/>
+{% elif value.type | default('block') == "file" %}
+      <source file='{{ virt_qemu_images_location }}/{{ value.name }}.{{ value.format | default('raw') }}'/>
+{% endif %}
+      <backingStore/>
+{% if key[:-1] == 'sd' %}
+      <target dev='{{ key }}' bus='scsi'/>
+      <address type='drive' controller='0' bus='0' target='0' unit='{{ loop.index0 }}'/>
+{% elif key[:-1] == 'vd' %}
+      <target dev='{{ key }}' bus='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x0{{ 10 + loop.index0 }}' function='0x0'/>
+{% endif %}
+    </disk>
+{% endfor %}
+{% endif %}
+    <controller type='scsi' index='0' model='virtio-scsi'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+    </controller>
+    <controller type='usb' index='0'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x2'/>
+    </controller>
+{% if ansible_distribution_major_version == "7" %}
+    <controller type='pci' index='0' model='pci-root'/>
+{% endif %}
+    <controller type='virtio-serial' index='0'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+    </controller>
+{% if item.value.network is defined %}
+{% for key, value in  item.value.network.iteritems()%}
+{% if value.network is defined %}
+    <interface type='network'>
+{% endif %}
+{% if value.bridge is defined %}
+    <interface type='bridge'>
+{% endif %}
+      <mac address='{{ value.mac }}'/>
+{% if value.network is defined %}
+      <source network='{{ value.network }}'/>
+{% endif %}
+{% if value.bridge is defined %}
+      <source bridge='{{ value.bridge }}'/>
+{% endif %}
+      <model type='{{ value.model | default('virtio') }}'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x0{{ 7 + loop.index0 }}' function='0x0'/>
+    </interface>
+{% endfor %}
+{% endif %}
+    <serial type='pty'>
+      <target port='0'/>
+    </serial>
+    <console type='pty'>
+      <target type='serial' port='0'/>
+    </console>
+    <channel type='unix'>
+{% if ansible_distribution_major_version == "6" %}
+      <source mode='bind' path='/var/lib/libvirt/qemu/{{ item.key }}.agent'/>
+{% endif %}
+      <target type='virtio' name='org.qemu.guest_agent.0'/>
+      <address type='virtio-serial' controller='0' bus='0' port='1'/>
+    </channel>
+    <input type='tablet' bus='usb'>
+      <address type='usb' bus='0' port='1'/>
+    </input>
+{% if item.value.vnc_enable | default('false') == true %}
+    <input type='mouse' bus='ps2'/>
+    <input type='keyboard' bus='ps2'/>
+    <graphics type='vnc' port='-1' autoport='yes' listen='0.0.0.0' keymap='en-us'/>
+    <video>
+      <model type='cirrus' vram='9216' heads='1'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+    </video>
+{% endif %}
+    <memballoon model='virtio'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
+    </memballoon>
+  </devices>
+</domain>
