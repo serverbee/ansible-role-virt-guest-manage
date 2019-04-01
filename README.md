@@ -44,7 +44,7 @@ The main feature of this role is parallel installation of all virtual machines w
 
 ## Dependencies
 
-qemu-kvm role
+serverbee.qemu_kvm role
 
 #### Example(s)
 
