@@ -48,7 +48,7 @@
     <emulator>/usr/bin/qemu-kvm</emulator>
 {% endif %}
 {% if item.value.disk is defined %}
-{% for key, value in  item.value.disk.iteritems()%}
+{% for key, value in  item.value.disk.items()%}
     <disk type='{{ value.type | default('block') }}' device='disk'>
 {% if key[:-1] == 'sd' %}
       <driver name='qemu' type='{{ value.format | default('raw') }}' cache='none' io='native' discard='unmap'/>
@@ -84,7 +84,7 @@
       <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
     </controller>
 {% if item.value.network is defined %}
-{% for key, value in  item.value.network.iteritems()%}
+{% for key, value in  item.value.network.items()%}
 {% if value.network is defined %}
     <interface type='network'>
 {% endif %}
