@@ -4,7 +4,7 @@ dependencies:
   - serverbee.qemu_kvm
 
 galaxy_info:
-  role_name: virt-guest-manage
+  role_name: virt_guest_manage
   author: mr-yaky
   description: Role to install and manage KVM VMs.
   company: "ServerBee, SL"
