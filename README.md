@@ -8,7 +8,7 @@ The main feature of this role is parallel installation of all virtual machines w
 
 ##### General
 
-* `virt_guest_mirror`: [default: `http://de.mirror.guru`]: CentOS mirror what will be used to install OS
+* `virt_guest_mirror`: [default: `http://mirror.eu.oneandone.net/linux/distributions`]: CentOS mirror what will be used to install OS
 * `virt_guest_os_location`: [default: `{{ virt_guest_mirror }}/centos/7/os/x86_64/`]: Location path where centos os componnets stored
 
 ##### Virt network list and it own settings
@@ -119,10 +119,7 @@ serverbee.qemu_kvm role
 
 #### Known issues
 
-1. Ansible 2.4.x and 2.5.x have the bug: https://github.com/ansible/ansible/issues/27268  
-You will got the following error message with different numbers of disks: "dict object' has no attribute ...".  
-Therefore you must set the same numbers of disks for each virtual machine if you need more than one disk.
-2. If you want to set 1 Gb RAM for guest you will got an error message:
+1. If you want to set 1 Gb RAM for guest you will got an error message:
 ```bash
 /lib/dracut-lib.sh: line 1030: echo: write error: No space left on device
 ```

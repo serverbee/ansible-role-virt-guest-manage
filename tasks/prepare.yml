@@ -19,18 +19,11 @@
     dest: "/var/lib/libvirt/boot/virtguestinst-initrd.img"
     force: yes
 
-- name: Set disk(s) list
-  set_fact:
-    virt_guest_disk_list: '{{ virt_guest_disk_list|default([]) | union (item.value.disk | list) }}'
-  with_dict: "{{ virt_guest_list }}"
-  loop_control:
-    label: "{{ item.value.disk }}"
-
 - include_tasks: prepare-disks.yml
-  with_items: 
-    - "{{ virt_guest_disk_list }}"
-  loop_control:
-    loop_var: device
+  vars:
+    vm_name: "{{ item.key }}"
+    disk_list: "{{ item.value.disk }}"
+  with_dict: "{{ virt_guest_list }}"
 
 - name: Define a new network(s)
   virt_net:
