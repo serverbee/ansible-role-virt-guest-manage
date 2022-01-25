@@ -1,6 +1,6 @@
 ## Virt guest manage role
 
-This role use [official ansible virt module](http://docs.ansible.com/ansible/latest/virt_module.html) for managing virtual machines supported by libvirt.
+This role use [official ansible virt module](https://docs.ansible.com/ansible/2.9/modules/virt_module.html) for managing virtual machines supported by libvirt.
 So you can control all your vms directly via settings in group_vars or host_vars.
 The main feature of this role is parallel installation of all virtual machines which set in `virt_guest_list`.
 
@@ -118,7 +118,7 @@ serverbee.qemu_kvm role
         ks: https://example.com/rhel7-ks.cfg
 ```
 
-#### Known issues
+#### Known issue
 
 1. If you want to set 1 Gb RAM for CentOS 7+ guest you will get an error message:
 ```bash
