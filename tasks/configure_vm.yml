@@ -9,15 +9,15 @@
     name: "{{ item.key }}"
     command: define
     xml: "{{ lookup('template', 'vm-install-template.xml.j2') }}"
-  when: not result.list_vms | join('') | search('{{ item.key }}')
-  with_dict: "{{ virt_guest_list }}"
+  when: not result.list_vms is search('{{ item.key }}')
+  loop: "{{ virt_guest_list|dict2items }}"
 
 - name: Start installation of virtual maschine(s)
   virt:
     name: "{{ item.key }}"
     state: running
-  when: not result.list_vms | join('') | search('{{ item.key }}')
-  with_dict: "{{ virt_guest_list }}"
+  when: not result.list_vms is search('{{ item.key }}')
+  loop: "{{ virt_guest_list|dict2items }}"
   loop_control:
     label: "{{ item.key }}"
 
@@ -29,8 +29,8 @@
   until: vm.status == "shutdown"
   retries: 100
   delay: 10
-  when: not result.list_vms | join('') | search('{{ item.key }}')
-  with_dict: "{{ virt_guest_list }}"
+  when: not result.list_vms is search('{{ item.key }}')
+  loop: "{{ virt_guest_list|dict2items }}"
   loop_control:
     label: "{{ item.key }}"
 
@@ -38,8 +38,8 @@
   virt:
     name: "{{ item.key }}"
     command: undefine
-  when: not result.list_vms | join('') | search('{{ item.key }}')
-  with_dict: "{{ virt_guest_list }}"
+  when: not result.list_vms is search('{{ item.key }}')
+  loop: "{{ virt_guest_list|dict2items }}"
   loop_control:
     label: "{{ item.key }}"
 
@@ -48,13 +48,13 @@
     name: "{{ item.key }}"
     command: define
     xml: "{{ lookup('template', 'vm-template.xml.j2') }}"
-  with_dict: "{{ virt_guest_list }}"
+  loop: "{{ virt_guest_list|dict2items }}"
 
 - name: Start virtual maschine(s)
   virt:
     name: "{{ item.key }}"
     state: running
-  with_dict: "{{ virt_guest_list }}"
+  loop: "{{ virt_guest_list|dict2items }}"
   loop_control:
     label: "{{ item.key }}"
 
@@ -63,6 +63,6 @@
     name: "{{ item.key }}"
     command: status
     autostart: true
-  with_dict: "{{ virt_guest_list }}"
+  loop: "{{ virt_guest_list|dict2items }}"
   loop_control:
     label: "{{ item.key }}"

@@ -23,26 +23,27 @@
   vars:
     vm_name: "{{ item.key }}"
     disk_list: "{{ item.value.disk }}"
-  with_dict: "{{ virt_guest_list }}"
+  loop: "{{ virt_guest_list|dict2items }}"
+  when: "{{ item.value.disk is defined }}"
 
 - name: Define a new network(s)
   virt_net:
     command: define
     name: "{{ item.key }}"
     xml: '{{ lookup("template", "vm-network.xml.j2") }}'
-  with_dict: "{{ virt_network_list }}"
+  loop: "{{ virt_network_list|dict2items }}"
   when: "{{ item.key is defined }}"
 
 - name: Start a new network(s)
   virt_net:
     state: active
     name: "{{ item.key }}"
-  with_dict: "{{ virt_network_list }}"
+  loop: "{{ virt_network_list|dict2items }}"
   when: "{{ item.key is defined }}"
 
 - name: Enable autostart for a new network(s)
   virt_net:
     autostart: yes
     name: "{{ item.key }}"
-  with_dict: "{{ virt_network_list }}"
+  loop: "{{ virt_network_list|dict2items }}"
   when: "{{ item.key is defined }}"

@@ -3,7 +3,7 @@
     vg: "{{ item.value.vg }}"
     lv: "{{ item.value.lv }}"
     size: "{{ item.value.size }}"
-  with_dict: "{{ disk_list }}"
+  loop: "{{ disk_list|dict2items }}"
   loop_control:
     label: "{{ item.key }}"
   when:
@@ -17,7 +17,7 @@
     size: "{{ item.value.size }}"
     format: "{{ item.value.format|default('raw') }}"
     options: "{{ item.value.format_options|default('preallocation=off') }}"
-  with_dict: "{{ disk_list }}"
+  loop: "{{ disk_list|dict2items }}"
   loop_control:
     label: "{{ item.key }}"
   when:
