@@ -29,7 +29,8 @@ The main feature of this role is parallel installation of all virtual machines w
 * `virt_guest_list.key.ram`: [optional, default `1`]: Set RAM limits. This value set in GiB
 * `virt_guest_list.key.disk`: [required]: Virt guest disk(s) declarations
 * `virt_guest_list.key.disk.[s|v]d[a-z]`: [required]: The name of virtual disk in virtual machine (e.g. `sda`, `sdb`, `sdc`, etc or `vda`, `vdb`, `vdc`, etc )
-* `virt_guest_list.key.disk.[s|v]d[a-z].type`: [optional, default `block`]: The Type of virtual disk (e.g. `block`, `file` )
+* `virt_guest_list.key.disk.[s|v]d[a-z].type`: [optional, default `block`]: The type of virtual disk (e.g. `block`, `file` )
+* `virt_guest_list.key.disk.[s|v]d[a-z].name`: [required only for `.type: file`]: The name of virtual qemu disk file
 * `virt_guest_list.key.disk.[s|v]d[a-z].format`: [optional, default `raw`]: The qemu format type of virtual disk (e.g. `raw`, `qcow2`)
 * `virt_guest_list.key.disk.[s|v]d[a-z].format_options`: [optional, default `preallocation=off`]: The qemu disk format options (e.g. `preallocation=metadata`)
 * `virt_guest_list.key.disk.[s|v]d[a-z].vg`: [required]: The name of LVM Volume Group
@@ -119,7 +120,7 @@ serverbee.qemu_kvm role
 
 #### Known issues
 
-1. If you want to set 1 Gb RAM for guest you will got an error message:
+1. If you want to set 1 Gb RAM for CentOS 7+ guest you will get an error message:
 ```bash
 /lib/dracut-lib.sh: line 1030: echo: write error: No space left on device
 ```
