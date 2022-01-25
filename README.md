@@ -35,7 +35,7 @@ The main feature of this role is parallel installation of all virtual machines w
 * `virt_guest_list.key.disk.[s|v]d[a-z].format_options`: [optional, default `preallocation=off`]: The qemu disk format options (e.g. `preallocation=metadata`)
 * `virt_guest_list.key.disk.[s|v]d[a-z].vg`: [required]: The name of LVM Volume Group
 * `virt_guest_list.key.disk.[s|v]d[a-z].lv`: [required]: The name of LVM Logic Volume
-* `virt_guest_list.key.disk.[s|v]d[a-z].size`: [required]: Size of virtual disk (e.g. `2048M`,`10G`, `20%VG`, etc )
+* `virt_guest_list.key.disk.[s|v]d[a-z].size`: [required]: Size of virtual disk (e.g. `2048M`,`10G`, `1T`, also `20%VG` or any equivalent can be used for LVM based disks)
 * `virt_guest_list.key.network`: [required]: Virt guest network(s) declarations
 * `virt_guest_list.key.network.eth[0-9]`: [required]: The name of network interface in virtual machine (e.g. `eth0`, `eth1`, etc )
 * `virt_guest_list.key.network.eth[0-9].mac`: [required]: MAC address of virtual network interface (e.g. `52:54:00:16:01:bc`, etc )
@@ -55,7 +55,7 @@ serverbee.qemu_kvm role
 ---
 - hosts: localhost 
   roles:
-    - virt-guest-manage
+    - serverbee.virt_guest_manage
   vars:
     virt_guest_list:
       example-vm:
@@ -79,7 +79,7 @@ serverbee.qemu_kvm role
 ---
 - hosts: localhost 
   roles:
-    - virt-guest-manage
+    - serverbee.virt_guest_manage
   vars:
     virt_network_list:
       br-nat0:
