@@ -9,7 +9,7 @@ The main feature of this role is parallel installation of all virtual machines w
 ##### General
 
 * `virt_guest_mirror`: [default: `http://mirror.eu.oneandone.net/linux/distributions`]: CentOS mirror what will be used to install OS
-* `virt_guest_os_location`: [default: `{{ virt_guest_mirror }}/centos/7/os/x86_64/`]: Location path where centos os componnets stored
+* `virt_guest_os_location`: [default: `{{ virt_guest_mirror }}/centos/7/os/x86_64`]: Location path where centos os componnets stored
 
 ##### Virt network list and it own settings
 
