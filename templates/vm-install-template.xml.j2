@@ -56,7 +56,11 @@
       <driver name='qemu' type='{{ value.format | default('raw') }}' cache='none' io='native'/>
 {% endif %}
 {% if value.type | default('block') == "block" %}
+{% if value.device is not defined %}
       <source dev='/dev/{{ value.vg }}/{{ value.lv }}'/>
+{% else %}
+      <source dev='{{ value.device }}'/>
+{% endif %}
 {% elif value.type | default('block') == "file" %}
       <source file='{{ virt_qemu_images_location }}/{{ value.name }}.{{ value.format | default('raw') }}'/>
 {% endif %}

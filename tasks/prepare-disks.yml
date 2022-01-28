@@ -8,6 +8,7 @@
     label: "{{ item.key }}"
   when:
     - item.key is defined
+    - item.value.device is not defined
     - item.value.type|default('block') == "block"
     - item.value.format|default('raw') == "raw"
 
@@ -22,5 +23,6 @@
     label: "{{ item.key }}"
   when:
     - item.key is defined
+    - item.value.device is not defined
     - item.value.type|default('block') == "file"
     - item.value.format|default('raw') in ["raw", "qcow2"]

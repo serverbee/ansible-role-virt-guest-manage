@@ -26,16 +26,17 @@ The main feature of this role is parallel installation of all virtual machines w
 * `virt_guest_list.key`: [required]: The name of virtual machine (e.g. `example-vm:`)
 * `virt_guest_list.key.uuid`: [required]: Universally unique identifier of virtual machine (e.g. `ad852ffe-07d9-43ec-9f5a-ced644f9a7a5`)
 * `virt_guest_list.key.cpu`: [optional, default `1`]: Set CPU core limits
-* `virt_guest_list.key.ram`: [optional, default `1`]: Set RAM limits. This value set in GiB
+* `virt_guest_list.key.ram`: [optional, default `2`]: Set RAM limits. This value set in GiB
 * `virt_guest_list.key.disk`: [required]: Virt guest disk(s) declarations
 * `virt_guest_list.key.disk.[s|v]d[a-z]`: [required]: The name of virtual disk in virtual machine (e.g. `sda`, `sdb`, `sdc`, etc or `vda`, `vdb`, `vdc`, etc )
 * `virt_guest_list.key.disk.[s|v]d[a-z].type`: [optional, default `block`]: The type of virtual disk (e.g. `block`, `file` )
 * `virt_guest_list.key.disk.[s|v]d[a-z].name`: [required only for `.type: file`]: The name of virtual qemu disk file
 * `virt_guest_list.key.disk.[s|v]d[a-z].format`: [optional, default `raw`]: The qemu format type of virtual disk (e.g. `raw`, `qcow2`)
 * `virt_guest_list.key.disk.[s|v]d[a-z].format_options`: [optional, default `preallocation=off`]: The qemu disk format options (e.g. `preallocation=metadata`)
-* `virt_guest_list.key.disk.[s|v]d[a-z].vg`: [required]: The name of LVM Volume Group
-* `virt_guest_list.key.disk.[s|v]d[a-z].lv`: [required]: The name of LVM Logic Volume
-* `virt_guest_list.key.disk.[s|v]d[a-z].size`: [required]: Size of virtual disk (e.g. `2048M`,`10G`, `1T`, also `20%VG` or any equivalent can be used for LVM based disks)
+* `virt_guest_list.key.disk.[s|v]d[a-z].vg`: [required only for `.type: block`]: The name of LVM Volume Group
+* `virt_guest_list.key.disk.[s|v]d[a-z].lv`: [required only for `.type: block`]: The name of LVM Logic Volume
+* `virt_guest_list.key.disk.[s|v]d[a-z].size`: [required, except using physical drives]: Size of virtual disk (e.g. `2048M`,`10G`, `1T`, also `20%VG` or any equivalent can be used for LVM based disks)
+* `virt_guest_list.key.disk.[s|v]d[a-z].device`: [required only for physical drives]: The full path to the physical drives on a Hypervisor (e.g. `/dev/sdb`, `/dev/nvme0n1`, etc)
 * `virt_guest_list.key.network`: [required]: Virt guest network(s) declarations
 * `virt_guest_list.key.network.eth[0-9]`: [required]: The name of network interface in virtual machine (e.g. `eth0`, `eth1`, etc )
 * `virt_guest_list.key.network.eth[0-9].mac`: [required]: MAC address of virtual network interface (e.g. `52:54:00:16:01:bc`, etc )
