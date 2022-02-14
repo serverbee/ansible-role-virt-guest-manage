@@ -1,8 +1,13 @@
 <domain type='kvm'>
   <name>{{ item.key }}</name>
   <uuid>{{ item.value.uuid }}</uuid>
+{% if item.value.ram | default('2') == "1" %}
+  <memory unit='KiB'>{{ 2 * 1024 * 1024 }}</memory>
+  <currentMemory unit='KiB'>{{ 2 * 1024 * 1024 }}</currentMemory>
+{% else %}
   <memory unit='KiB'>{{ item.value.ram | default('2') * 1024 * 1024 }}</memory>
   <currentMemory unit='KiB'>{{ item.value.ram | default('2') * 1024 * 1024 }}</currentMemory>
+{% endif %}
   <vcpu placement='static'>{{ item.value.cpu | default('1') }}</vcpu>
   <resource>
     <partition>/machine</partition>

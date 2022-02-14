@@ -36,7 +36,7 @@ The main feature of this role is parallel installation of all virtual machines w
 * `virt_guest_list.key.disk.[s|v]d[a-z].vg`: [required only for `.type: block`]: The name of LVM Volume Group
 * `virt_guest_list.key.disk.[s|v]d[a-z].lv`: [required only for `.type: block`]: The name of LVM Logic Volume
 * `virt_guest_list.key.disk.[s|v]d[a-z].size`: [required, except using physical drives]: Size of virtual disk (e.g. `2048M`,`10G`, `1T`, also `20%VG` or any equivalent can be used for LVM based disks)
-* `virt_guest_list.key.disk.[s|v]d[a-z].device`: [required only for physical drives]: The full path to the physical drives on a Hypervisor (e.g. `/dev/sdb`, `/dev/nvme0n1`, etc)
+* `virt_guest_list.key.disk.[s|v]d[a-z].device`: [required only for physical drives]: The full path to the physical drive on a Hypervisor (e.g. `/dev/sdb`, `/dev/nvme0n1`, etc)
 * `virt_guest_list.key.network`: [required]: Virt guest network(s) declarations
 * `virt_guest_list.key.network.eth[0-9]`: [required]: The name of network interface in virtual machine (e.g. `eth0`, `eth1`, etc )
 * `virt_guest_list.key.network.eth[0-9].mac`: [required]: MAC address of virtual network interface (e.g. `52:54:00:16:01:bc`, etc )
@@ -107,6 +107,8 @@ serverbee.qemu_kvm role
             format_options: preallocation=metadata
             name: example-second-drive
             size: 5G
+          sdc:
+            device: /dev/nvme0n1
         network:
           eth0:
             mac: 52:54:00:16:01:bc
@@ -118,14 +120,6 @@ serverbee.qemu_kvm role
             model: e1000
         ks: https://example.com/rhel7-ks.cfg
 ```
-
-#### Known issue
-
-1. If you want to set 1 Gb RAM for CentOS 7+ guest you will get an error message:
-```bash
-/lib/dracut-lib.sh: line 1030: echo: write error: No space left on device
-```
-   The main workaround for that: just set 2 Gb RAM for installation stage and change it after.
 
 #### License
 
