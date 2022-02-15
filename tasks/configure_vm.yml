@@ -1,23 +1,24 @@
 ---
-- name: Check if virtual maschine(s) exists
+
+- name: Check if virtual machine(s) exists
   virt:
     command: list_vms
   register: result
 
-- name: Create virtual maschine(s)
+- name: Create virtual machine(s)
   virt:
     name: "{{ item.key }}"
     command: define
     xml: "{{ lookup('template', 'vm-install-template.xml.j2') }}"
   when: not result.list_vms is search('{{ item.key }}')
-  loop: "{{ virt_guest_list|dict2items }}"
+  loop: "{{ virt_guest_list|dict2items|json_query(jmesh_query) }}"
 
-- name: Start installation of virtual maschine(s)
+- name: Start installation of virtual machine(s)
   virt:
     name: "{{ item.key }}"
     state: running
   when: not result.list_vms is search('{{ item.key }}')
-  loop: "{{ virt_guest_list|dict2items }}"
+  loop: "{{ virt_guest_list|dict2items|json_query(jmesh_query) }}"
   loop_control:
     label: "{{ item.key }}"
 
@@ -30,39 +31,39 @@
   retries: 100
   delay: 10
   when: not result.list_vms is search('{{ item.key }}')
-  loop: "{{ virt_guest_list|dict2items }}"
+  loop: "{{ virt_guest_list|dict2items|json_query(jmesh_query) }}"
   loop_control:
     label: "{{ item.key }}"
 
-- name: Undefine installation xml of virtual maschine(s)
+- name: Undefine installation xml of virtual machine(s)
   virt:
     name: "{{ item.key }}"
     command: undefine
   when: not result.list_vms is search('{{ item.key }}')
-  loop: "{{ virt_guest_list|dict2items }}"
+  loop: "{{ virt_guest_list|dict2items|json_query(jmesh_query) }}"
   loop_control:
     label: "{{ item.key }}"
 
-- name: Define non installation xml for virtual maschine(s)
+- name: Define non installation xml for virtual machine(s)
   virt:
     name: "{{ item.key }}"
     command: define
     xml: "{{ lookup('template', 'vm-template.xml.j2') }}"
-  loop: "{{ virt_guest_list|dict2items }}"
+  loop: "{{ virt_guest_list|dict2items|json_query(jmesh_query) }}"
 
-- name: Start virtual maschine(s)
+- name: Start virtual machine(s)
   virt:
     name: "{{ item.key }}"
     state: running
-  loop: "{{ virt_guest_list|dict2items }}"
+  loop: "{{ virt_guest_list|dict2items|json_query(jmesh_query) }}"
   loop_control:
     label: "{{ item.key }}"
 
-- name: Enable autostart for virtual maschine(s)
+- name: Enable autostart for virtual machine(s)
   virt:
     name: "{{ item.key }}"
     command: status
     autostart: true
-  loop: "{{ virt_guest_list|dict2items }}"
+  loop: "{{ virt_guest_list|dict2items|json_query(jmesh_query) }}"
   loop_control:
     label: "{{ item.key }}"

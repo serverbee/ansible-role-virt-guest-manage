@@ -121,6 +121,19 @@ serverbee.qemu_kvm role
         ks: https://example.com/rhel7-ks.cfg
 ```
 
+##### Extra vars to manage only one VM
+
+This option can be very useful if you have many virtual machines but want to manage only one of them.  
+It will run Ansible playbook faster and wihtout applying some things for other virtual machines.  
+To do that you have to set an extra variable named `vm` when you apply your playbook:
+
+```bash
+$ ansible-playbook virt-guest-manage.yml --extra-vars vm=example-vm
+```
+
+It supports to pass only one name of virtual machine per one time.
+
+
 #### License
 
 GPLv3 license

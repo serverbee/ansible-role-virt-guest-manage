@@ -1,4 +1,14 @@
 ---
+
+- name: Select specific virtual machine if it set
+  set_fact:
+    jmesh_query: >-
+      {%- if vm is defined -%}
+      [?key=='{{ vm }}']
+      {%- else -%}
+      [*]
+      {%- endif -%}
+
 - name: Install dependent packages
   yum:
     name: "{{ item }}"
@@ -23,7 +33,7 @@
   vars:
     vm_name: "{{ item.key }}"
     disk_list: "{{ item.value.disk }}"
-  loop: "{{ virt_guest_list|dict2items }}"
+  loop: "{{ virt_guest_list|dict2items|json_query(jmesh_query) }}"
   when: "{{ item.value.disk is defined }}"
 
 - name: Define a new network(s)
