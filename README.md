@@ -10,6 +10,9 @@ The main feature of this role is parallel installation of all virtual machines w
 
 * `virt_guest_mirror`: [default: `http://mirror.eu.oneandone.net/linux/distributions`]: CentOS mirror what will be used to install OS
 * `virt_guest_os_location`: [default: `{{ virt_guest_mirror }}/centos/7/os/x86_64`]: Location path where centos os componnets stored
+* `virt_guest_kickstart_config_url`: [optional, default `ip of a Hypervisor`]: The url for downloading kickstart configuration durring an installation
+* `virt_guest_init_passwd`: [required]: A password of root user which you will use for the fisrt login
+* `virt_guest_init_hostname`: [optional, default `fresh-installed.local`]: The first hostname on virtual machine OS level
 
 ##### Virt network list and it own settings
 
@@ -42,7 +45,6 @@ The main feature of this role is parallel installation of all virtual machines w
 * `virt_guest_list.key.network.eth[0-9].mac`: [required]: MAC address of virtual network interface (e.g. `52:54:00:16:01:bc`, etc )
 * `virt_guest_list.key.network.eth[0-9].bridge`: [required]: The name of bridge interface in which vnet interface will be included (e.g. `br0`, `bridge1`, etc )
 * `virt_guest_list.key.network.eth[0-9].model`: [optional, default `virtio`]: The qemu model of virtual network interface (e.g. `virtio`, `e1000`, `rtl8139` etc )
-* `virt_guest_list.key.ks`: [required]: The url name of kickstart file for auto installation of CentOS (e.g. `https://example.com/rhel7-ks.cfg`)
 
 ## Dependencies
 
@@ -70,8 +72,6 @@ serverbee.qemu_kvm role
           eth0:
             mac: 52:54:00:16:01:bc
             bridge: br0
-        ks: https://example.com/rhel7-ks.cfg
-
 ```
 
 ##### Full options example 
@@ -118,13 +118,12 @@ serverbee.qemu_kvm role
             mac: 52:54:00:16:02:ba
             network: br-nat0
             model: e1000
-        ks: https://example.com/rhel7-ks.cfg
 ```
 
 ##### Extra vars to manage only one VM
 
 This option can be very useful if you have many virtual machines but want to manage only one of them.  
-It will run Ansible playbook faster and wihtout applying some things for other virtual machines.  
+It will run Ansible playbook faster and without applying some things for other virtual machines.  
 To do that you have to set an extra variable named `vm` when you apply your playbook:
 
 ```bash

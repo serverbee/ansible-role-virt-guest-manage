@@ -1,0 +1,31 @@
+#version=RHEL7
+# System authorization information
+auth --enableshadow --passalgo=sha512
+
+# Run the Setup Agent on first boot
+firstboot --enable
+ignoredisk --only-use=sda
+# Keyboard layouts
+keyboard --vckeymap=us --xlayouts='us'
+# System language
+lang en_US.UTF-8
+
+# Network information
+network --bootproto=dhcp --device=eth0 --noipv6 --activate
+network --hostname={{ virt_guest_init_hostname }}
+# Root password
+rootpw --plaintext {{ virt_guest_init_passwd }}
+# System services
+services --enabled="chronyd"
+# System timezone
+timezone UTC --isUtc --ntpservers=0.centos.pool.ntp.org,1.centos.pool.ntp.org,2.centos.pool.ntp.org,3.centos.pool.ntp.org
+# System bootloader configuration
+bootloader --location=mbr --boot-drive=sda
+# Partition clearing information
+clearpart --none --initlabel
+# Disk partitioning information
+part /boot --fstype="xfs" --ondisk=sda --size=512
+part / --fstype="xfs" --ondisk=sda --grow
+
+# Apply latest updates
+repo --name=updates

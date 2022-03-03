@@ -24,8 +24,8 @@
 {% endif %}
     <kernel>/var/lib/libvirt/boot/virtguestinst-vmlinuz</kernel>
     <initrd>/var/lib/libvirt/boot/virtguestinst-initrd.img</initrd>
-{% if item.value.ks is defined %}
-    <cmdline>ks={{ item.value.ks }} console=tty0 console=ttyS0,115200n8 repo={{ virt_guest_os_location }}</cmdline>
+{% if virt_guest_kickstart_config_url is defined %}
+    <cmdline>ks={{ virt_guest_kickstart_config_url }}/{{ item.key }}-ks.cfg console=tty0 console=ttyS0,115200n8 repo={{ virt_guest_os_location }}</cmdline>
 {% endif %}
     <boot dev='hd'/>
   </os>
