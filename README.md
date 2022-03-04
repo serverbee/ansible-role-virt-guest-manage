@@ -12,6 +12,7 @@ The main feature of this role is parallel installation of all virtual machines w
 * `virt_guest_os_location`: [default: `{{ virt_guest_mirror }}/centos/7/os/x86_64`]: Location path where centos os componnets stored
 * `virt_guest_kickstart_config_dir`: [default: `/tmp/kickstart`]: The path where kickstart files with be created
 * `virt_guest_kickstart_config_url`: [default: `ip of a Hypervisor`]: The url for downloading kickstart configuration durring an installation
+* `virt_guest_kickstart_serve_timeout`: [default: `90`]: Time in seconds to serve kickstart files
 * `virt_guest_init_passwd`: [required]: A password of root user which you will use for the fisrt login
 * `virt_guest_init_hostname`: [default: `fresh-installed.local`]: The first hostname on virtual machine OS level
 

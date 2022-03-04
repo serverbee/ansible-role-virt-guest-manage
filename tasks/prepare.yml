@@ -9,14 +9,13 @@
       [*]
       {%- endif -%}
 
+- name: Add the OS specific variables
+  include_vars: "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
+
 - name: Install dependent packages
   yum:
-    name: "{{ item }}"
+    name: "{{ dependent_packages }}"
     state: installed
-  with_items:
-    - coreutils
-    - libvirt-python
-    - python-lxml
 
 - name: Download vmlinuz to boot
   get_url:

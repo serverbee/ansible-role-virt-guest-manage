@@ -7,6 +7,7 @@ virt_qemu_images_location: /var/lib/libvirt/images
 
 virt_guest_kickstart_config_dir: /tmp/kickstart
 virt_guest_kickstart_config_url: "http://{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}:8000"
+virt_guest_kickstart_serve_timeout: 90
 
 # You have to update the initial password !
 virt_guest_init_passwd: "8E0@a0842e*9f30be53>B195"
