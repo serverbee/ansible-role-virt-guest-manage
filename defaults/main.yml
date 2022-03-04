@@ -3,8 +3,9 @@
 virt_guest_mirror: http://mirror.eu.oneandone.net/linux/distributions
 virt_guest_os_location: "{{ virt_guest_mirror }}/centos/7/os/x86_64"
 
-virt_qemu_images_location: "/var/lib/libvirt/images"
+virt_qemu_images_location: /var/lib/libvirt/images
 
+virt_guest_kickstart_config_dir: /tmp/kickstart
 virt_guest_kickstart_config_url: "http://{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}:8000"
 
 # You have to update the initial password !

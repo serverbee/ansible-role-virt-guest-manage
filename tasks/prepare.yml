@@ -61,19 +61,6 @@
 
 - name: Create kickstart directory
   file:
-    path: /tmp/kickstart
+    path: "{{ virt_guest_kickstart_config_dir }}"
     state: directory
     mode: 0700
-
-- name: Create kickstart configuration
-  template:
-    src: vm-ks.cfg.j2
-    dest: "/tmp/kickstart/{{ item.key }}-ks.cfg"
-  loop: "{{ virt_guest_list|dict2items|json_query(jmesh_query) }}"
-  loop_control:
-    label: "{{ item.key }}"
-
-- name: Run internal http server for serving ks configuration
-  shell: 
-    cmd: nohup timeout 90 python -m SimpleHTTPServer >/dev/null 2>&1 &
-    chdir: /tmp/kickstart
