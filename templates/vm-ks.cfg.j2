@@ -1,5 +1,5 @@
 #version=RHEL7+
-{% if ansible_distribution_major_version == "8" %}
+{% if virt_guest_os_location | regex_findall('\\d') | first == "8" %}
 # Install minimal environment
 %packages
 @^minimal-environment
@@ -18,9 +18,9 @@ keyboard --vckeymap=us --xlayouts='us'
 lang en_US.UTF-8
 
 # Network information
-{% if ansible_distribution_major_version == "7" %}
+{% if virt_guest_os_location | regex_findall('\\d') | first == "7" %}
 network --bootproto=dhcp --device=eth0 --noipv6 --activate
-{% elif ansible_distribution_major_version == "8" %}
+{% elif virt_guest_os_location | regex_findall('\\d') | first == "8" %}
 network --bootproto=dhcp --device=ens7 --noipv6 --activate
 {% endif %}
 network --hostname={{ virt_guest_init_hostname }}
