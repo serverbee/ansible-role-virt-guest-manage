@@ -1,4 +1,11 @@
-#version=RHEL7
+#version=RHEL7+
+{% if ansible_distribution_major_version == "8" %}
+# Install minimal environment
+%packages
+@^minimal-environment
+%end
+{% endif %}
+
 # System authorization information
 auth --enableshadow --passalgo=sha512
 
@@ -11,7 +18,11 @@ keyboard --vckeymap=us --xlayouts='us'
 lang en_US.UTF-8
 
 # Network information
+{% if ansible_distribution_major_version == "7" %}
 network --bootproto=dhcp --device=eth0 --noipv6 --activate
+{% elif ansible_distribution_major_version == "8" %}
+network --bootproto=dhcp --device=ens7 --noipv6 --activate
+{% endif %}
 network --hostname={{ virt_guest_init_hostname }}
 # Root password
 rootpw --plaintext {{ virt_guest_init_passwd }}
@@ -26,6 +37,3 @@ clearpart --none --initlabel
 # Disk partitioning information
 part /boot --fstype="xfs" --ondisk=sda --size=512
 part / --fstype="xfs" --ondisk=sda --grow
-
-# Apply latest updates
-repo --name=updates

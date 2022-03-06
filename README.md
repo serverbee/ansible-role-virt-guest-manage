@@ -8,8 +8,8 @@ The main feature of this role is parallel installation of all virtual machines w
 
 ##### General
 
-* `virt_guest_mirror`: [default: `http://mirror.eu.oneandone.net/linux/distributions`]: CentOS mirror what will be used to install OS
-* `virt_guest_os_location`: [default: `{{ virt_guest_mirror }}/centos/7/os/x86_64`]: Location path where centos os componnets stored
+* `virt_guest_mirror`: [default: `http://repo.almalinux.org`]: Almalinux mirror what will be used to install OS
+* `virt_guest_os_location`: [default: `{{ virt_guest_mirror }}/almalinux//8/BaseOS/x86_64/os/`]: Location path where Almalinux os componnets stored
 * `virt_guest_kickstart_config_dir`: [default: `/tmp/kickstart`]: The path where kickstart files with be created
 * `virt_guest_kickstart_config_url`: [default: `ip of a Hypervisor`]: The url for downloading kickstart configuration durring an installation
 * `virt_guest_kickstart_serve_timeout`: [default: `90`]: Time in seconds to serve kickstart files
