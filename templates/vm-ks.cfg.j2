@@ -18,10 +18,18 @@ keyboard --vckeymap=us --xlayouts='us'
 lang en_US.UTF-8
 
 # Network information
+{% if item.value.network.eth0.ip is not defined %}
 {% if virt_guest_os_location | regex_findall('\\d') | first == "7" %}
 network --bootproto=dhcp --device=eth0 --noipv6 --activate
 {% elif virt_guest_os_location | regex_findall('\\d') | first == "8" %}
 network --bootproto=dhcp --device=ens7 --noipv6 --activate
+{% endif %}
+{% else %}
+{% if virt_guest_os_location | regex_findall('\\d') | first == "7" %}
+network --bootproto=static --device=eth0 --ip={{ item.value.network.eth0.ip }} --netmask={{ item.value.network.eth0.netmask }} --gateway={{ item.value.network.eth0.gateway }} --nameserver={{ item.value.network.eth0.dns }} --noipv6 --activate
+{% elif virt_guest_os_location | regex_findall('\\d') | first == "8" %}
+network --bootproto=static --device=ens7 --ip={{ item.value.network.eth0.ip }} --netmask={{ item.value.network.eth0.netmask }} --gateway={{ item.value.network.eth0.gateway }} --nameserver={{ item.value.network.eth0.dns }} --noipv6 --activate
+{% endif %}
 {% endif %}
 network --hostname={{ virt_guest_init_hostname }}
 # Root password

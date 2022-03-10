@@ -9,7 +9,7 @@ The main feature of this role is parallel installation of all virtual machines w
 ##### General
 
 * `virt_guest_mirror`: [default: `http://repo.almalinux.org`]: Almalinux mirror what will be used to install OS
-* `virt_guest_os_location`: [default: `{{ virt_guest_mirror }}/almalinux//8/BaseOS/x86_64/os/`]: Location path where Almalinux os componnets stored
+* `virt_guest_os_location`: [default: `{{ virt_guest_mirror }}/almalinux/8/BaseOS/x86_64/os`]: Location path where Almalinux os componnets stored
 * `virt_guest_kickstart_config_dir`: [default: `/tmp/kickstart`]: The path where kickstart files with be created
 * `virt_guest_kickstart_config_url`: [default: `ip of a Hypervisor`]: The url for downloading kickstart configuration durring an installation
 * `virt_guest_kickstart_serve_timeout`: [default: `90`]: Time in seconds to serve kickstart files
@@ -47,6 +47,11 @@ The main feature of this role is parallel installation of all virtual machines w
 * `virt_guest_list.key.network.eth[0-9].mac`: [required]: MAC address of virtual network interface (e.g. `52:54:00:16:01:bc`, etc )
 * `virt_guest_list.key.network.eth[0-9].bridge`: [required]: The name of bridge interface in which vnet interface will be included (e.g. `br0`, `bridge1`, etc )
 * `virt_guest_list.key.network.eth[0-9].model`: [optional, default `virtio`]: The qemu model of virtual network interface (e.g. `virtio`, `e1000`, `rtl8139` etc )
+* `virt_guest_list.key.network.eth0.ip`: [optional]: Static IP address for main network interface
+* `virt_guest_list.key.network.eth0.netmask`: [optional]: Netmask for main network interface
+* `virt_guest_list.key.network.eth0.gateway`: [optional]: IP address of gateway for main network interface
+* `virt_guest_list.key.network.eth0.dns`: [optional]:  Primary DNS server. This option supports only one DNS server.
+* `virt_guest_list.key.vnc_enable`: [optional, default `false`]: Enable VNC server on qemu-kvm side to access a virtual machine
 
 ## Dependencies
 
@@ -116,10 +121,15 @@ serverbee.qemu_kvm role
             mac: 52:54:00:16:01:bc
             bridge: br0
             model: virtio
+            ip: 172.16.2.2
+            netmask: 255.255.255.248
+            gateway: 172.16.2.1
+            dns: 172.16.2.1
           eth1:
             mac: 52:54:00:16:02:ba
             network: br-nat0
             model: e1000
+        vnc_enable: true
 ```
 
 ##### Extra vars to manage only one VM
