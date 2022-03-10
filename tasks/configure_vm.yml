@@ -71,6 +71,20 @@
 
   when: not result.list_vms is search('{{ item.key }}')
 
+- name: Find temporary kickstart configuration
+  find:
+    paths: "{{ virt_guest_kickstart_config_dir }}"
+    patterns: "*.cfg"
+  register: ks_to_delete
+
+- name: Remove temporary kickstart configuration
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ ks_to_delete.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+
 - name: Define non installation xml for virtual machine(s)
   virt:
     name: "{{ item.key }}"
