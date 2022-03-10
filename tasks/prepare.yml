@@ -34,7 +34,7 @@
     vm_name: "{{ item.key }}"
     disk_list: "{{ item.value.disk }}"
   loop: "{{ virt_guest_list|dict2items|json_query(jmesh_query) }}"
-  when: "{{ item.value.disk is defined }}"
+  when: item.value.disk is defined
 
 - name: Define a new network(s)
   virt_net:
@@ -42,21 +42,21 @@
     name: "{{ item.key }}"
     xml: '{{ lookup("template", "vm-network.xml.j2") }}'
   loop: "{{ virt_network_list|dict2items }}"
-  when: "{{ item.key is defined }}"
+  when: item.key is defined
 
 - name: Start a new network(s)
   virt_net:
     state: active
     name: "{{ item.key }}"
   loop: "{{ virt_network_list|dict2items }}"
-  when: "{{ item.key is defined }}"
+  when: item.key is defined
 
 - name: Enable autostart for a new network(s)
   virt_net:
     autostart: yes
     name: "{{ item.key }}"
   loop: "{{ virt_network_list|dict2items }}"
-  when: "{{ item.key is defined }}"
+  when: item.key is defined
 
 - name: Create kickstart directory
   file:
