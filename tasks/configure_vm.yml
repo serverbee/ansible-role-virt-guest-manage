@@ -50,6 +50,8 @@
       command: define
       xml: "{{ lookup('template', 'vm-install-template.xml.j2') }}"
     loop: "{{ virt_guest_list|dict2items|json_query(jmesh_query) }}"
+    notify:
+     - Print init passwd
 
   - name: Start installation of virtual machine(s)
     virt:

@@ -1,0 +1,6 @@
+- name: Print init passwd
+  debug:
+    msg:
+      - "You can use following credentials for the first login:"
+      - "User: root"
+      - "Password: {{ virt_guest_init_passwd }}"
