@@ -1,9 +1,9 @@
 <domain type='kvm'>
   <name>{{ item.key }}</name>
   <uuid>{{ item.value.uuid }}</uuid>
-  <memory unit='KiB'>{{ item.value.ram | default('2') * 1024 * 1024 }}</memory>
-  <currentMemory unit='KiB'>{{ item.value.ram | default('2') * 1024 * 1024 }}</currentMemory>
-  <vcpu placement='static'>{{ item.value.cpu }}</vcpu>
+  <memory unit='KiB'>{{ item.value.ram | default(2) * 1024 * 1024 }}</memory>
+  <currentMemory unit='KiB'>{{ item.value.ram | default(2) * 1024 * 1024 }}</currentMemory>
+  <vcpu placement='static'>{{ item.value.cpu | default(1) }}</vcpu>
   <os>
 {% if ansible_distribution == "Fedora" %}
     <type>hvm</type>
