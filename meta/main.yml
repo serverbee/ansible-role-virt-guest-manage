@@ -1,7 +1,8 @@
 ---
 
 dependencies:
-  - serverbee.qemu_kvm
+  - role: serverbee.qemu_kvm
+    when: virt_guest_dependency_qemu_kvm_role|bool
 
 galaxy_info:
   role_name: virt_guest_manage

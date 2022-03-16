@@ -1,5 +1,6 @@
 ---
 
+virt_guest_dependency_qemu_kvm_role: true
 virt_guest_mirror: http://repo.almalinux.org
 virt_guest_os_location: "{{ virt_guest_mirror }}/almalinux/8/BaseOS/x86_64/os"
 
