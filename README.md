@@ -30,6 +30,7 @@ The main feature of this role is parallel installation of all virtual machines w
 
 * `virt_guest_list`: [required, default: `{}`]: Virt guest declarations
 * `virt_guest_list.key`: [required]: The name of virtual machine (e.g. `example-vm:`)
+* `virt_guest_list.key.autostart`: [optional, default `true`]: Whether enable an autostart for virtual machine
 * `virt_guest_list.key.uuid`: [required]: Universally unique identifier of virtual machine (e.g. `ad852ffe-07d9-43ec-9f5a-ced644f9a7a5`)
 * `virt_guest_list.key.cpu`: [optional, default `1`]: Set CPU core limits
 * `virt_guest_list.key.ram`: [optional, default `2`]: Set RAM limits. This value set in GiB
@@ -99,6 +100,7 @@ serverbee.qemu_kvm role
 
     virt_guest_list:
       example-vm:
+        autostart: false
         uuid: 7eb09567-83b8-4aab-916e-24924d6a0f89
         cpu: 2 # Core
         ram: 4 # GiB
