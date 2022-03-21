@@ -46,6 +46,7 @@ The main feature of this role is parallel installation of all virtual machines w
 * `virt_guest_list.key.disk.[s|v]d[a-z].lv`: [required only for `.type: block`]: The name of LVM Logic Volume
 * `virt_guest_list.key.disk.[s|v]d[a-z].size`: [required, except using physical drives]: Size of virtual disk (e.g. `2048M`,`10G`, `1T`, also `20%VG` or any equivalent can be used for LVM based disks)
 * `virt_guest_list.key.disk.[s|v]d[a-z].device`: [required only for physical drives]: The full path to the physical drive on a Hypervisor (e.g. `/dev/sdb`, `/dev/nvme0n1`, etc)
+* `virt_guest_list.key.disk.[s|v]da.fstype`: [optional, default `xfs`]: Filesystem type for all partitions inside a virtual disk (e.g. `ext4`, `ext3`, etc)
 * `virt_guest_list.key.network`: [required]: Virt guest network(s) declarations
 * `virt_guest_list.key.network.eth[0-9]`: [required]: The name of network interface in virtual machine (e.g. `eth0`, `eth1`, etc )
 * `virt_guest_list.key.network.eth[0-9].mac`: [required]: MAC address of virtual network interface (e.g. `52:54:00:16:01:bc`, etc )
@@ -113,6 +114,7 @@ serverbee.qemu_kvm role
             vg: vg_local
             lv: lv_vm_example-first
             size: 20%VG
+            fstype: ext4
           vdb:
             type: file
             format: qcow2
