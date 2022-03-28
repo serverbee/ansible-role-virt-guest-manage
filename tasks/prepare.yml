@@ -17,17 +17,27 @@
     name: "{{ dependent_packages }}"
     state: installed
 
-- name: Download vmlinuz to boot
-  get_url:
-    url: "{{ virt_guest_os_location }}/images/pxeboot/vmlinuz"
-    dest: "/var/lib/libvirt/boot/virtguestinst-vmlinuz"
-    force: yes
+- block:
+  - name: Define a new network(s)
+    virt_net:
+      command: define
+      name: "{{ item.key }}"
+      xml: '{{ lookup("template", "vm-network.xml.j2") }}'
+    loop: "{{ virt_network_list|dict2items }}"
 
-- name: Download initrd to boot
-  get_url:
-    url: "{{ virt_guest_os_location }}/images/pxeboot/initrd.img"
-    dest: "/var/lib/libvirt/boot/virtguestinst-initrd.img"
-    force: yes
+  - name: Start a new network(s)
+    virt_net:
+      state: active
+      name: "{{ item.key }}"
+    loop: "{{ virt_network_list|dict2items }}"
+
+  - name: Enable autostart for a new network(s)
+    virt_net:
+      autostart: yes
+      name: "{{ item.key }}"
+    loop: "{{ virt_network_list|dict2items }}"
+
+  when: item.key is defined
 
 - include_tasks: prepare-disks.yml
   vars:
@@ -35,31 +45,3 @@
     disk_list: "{{ item.value.disk }}"
   loop: "{{ virt_guest_list|dict2items|json_query(jmesh_query) }}"
   when: item.value.disk is defined
-
-- name: Define a new network(s)
-  virt_net:
-    command: define
-    name: "{{ item.key }}"
-    xml: '{{ lookup("template", "vm-network.xml.j2") }}'
-  loop: "{{ virt_network_list|dict2items }}"
-  when: item.key is defined
-
-- name: Start a new network(s)
-  virt_net:
-    state: active
-    name: "{{ item.key }}"
-  loop: "{{ virt_network_list|dict2items }}"
-  when: item.key is defined
-
-- name: Enable autostart for a new network(s)
-  virt_net:
-    autostart: yes
-    name: "{{ item.key }}"
-  loop: "{{ virt_network_list|dict2items }}"
-  when: item.key is defined
-
-- name: Create kickstart directory
-  file:
-    path: "{{ virt_guest_kickstart_config_dir }}"
-    state: directory
-    mode: 0700
