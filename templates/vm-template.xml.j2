@@ -67,9 +67,11 @@
     </disk>
 {% endfor %}
 {% endif %}
+{% if item.value.disk[main_disk] == 'sda' %}
     <controller type='scsi' index='0' model='virtio-scsi'>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
     </controller>
+{% endif %}
     <controller type='usb' index='0'>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x2'/>
     </controller>

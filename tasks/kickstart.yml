@@ -30,7 +30,7 @@
     destination_port: "{{ virt_guest_kickstart_config_port }}"
     jump: ACCEPT
     action: insert
-    rule_num: 1
+    rule_num: "1"
 
 - name: Download vmlinuz to boot
   get_url:

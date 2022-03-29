@@ -25,13 +25,13 @@
     <kernel>/var/lib/libvirt/boot/virtguestinst-vmlinuz</kernel>
     <initrd>/var/lib/libvirt/boot/virtguestinst-initrd.img</initrd>
 {% if virt_guest_kickstart_config_url is defined and virt_guest_os_location is defined %}
-{% if item.value.network.eth0.ip is not defined %}
+{% if item.value.network[main_interface].ip is not defined %}
     <cmdline>ks={{ virt_guest_kickstart_config_url }}/{{ item.key }}-ks.cfg console=tty0 console=ttyS0,115200n8 repo={{ virt_guest_os_location }}</cmdline>
 {% else %}
 {% if virt_guest_os_location | regex_findall('\\d') | first == "7" %}
-    <cmdline>ks={{ virt_guest_kickstart_config_url }}/{{ item.key }}-ks.cfg console=tty0 console=ttyS0,115200n8 repo={{ virt_guest_os_location }} ip={{ item.value.network.eth0.ip }}::{{ item.value.network.eth0.gateway }}:{{ item.value.network.eth0.netmask }}:{{ virt_guest_init_hostname }}:eth0:none nameserver={{ item.value.network.eth0.dns }}</cmdline>
+    <cmdline>ks={{ virt_guest_kickstart_config_url }}/{{ item.key }}-ks.cfg console=tty0 console=ttyS0,115200n8 repo={{ virt_guest_os_location }} ip={{ item.value.network[main_interface].ip }}::{{ item.value.network[main_interface].gateway }}:{{ item.value.network[main_interface].netmask }}:{{ virt_guest_init_hostname }}:eth0:none nameserver={{ item.value.network[main_interface].dns }}</cmdline>
 {% elif virt_guest_os_location | regex_findall('\\d') | first == "8" %}
-    <cmdline>ks={{ virt_guest_kickstart_config_url }}/{{ item.key }}-ks.cfg console=tty0 console=ttyS0,115200n8 repo={{ virt_guest_os_location }} ip={{ item.value.network.eth0.ip }}::{{ item.value.network.eth0.gateway }}:{{ item.value.network.eth0.netmask }}:{{ virt_guest_init_hostname }}:ens7:none nameserver={{ item.value.network.eth0.dns }}</cmdline>
+    <cmdline>ks={{ virt_guest_kickstart_config_url }}/{{ item.key }}-ks.cfg console=tty0 console=ttyS0,115200n8 repo={{ virt_guest_os_location }} ip={{ item.value.network[main_interface].ip }}::{{ item.value.network[main_interface].gateway }}:{{ item.value.network[main_interface].netmask }}:{{ virt_guest_init_hostname }}:ens7:none nameserver={{ item.value.network[main_interface].dns }}</cmdline>
 {% endif %}
 {% endif %}
 {% endif %}
@@ -88,9 +88,11 @@
     </disk>
 {% endfor %}
 {% endif %}
+{% if item.value.disk[main_disk] == 'sda' %}
     <controller type='scsi' index='0' model='virtio-scsi'>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
     </controller>
+{% endif %}
     <controller type='usb' index='0'>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x2'/>
     </controller>

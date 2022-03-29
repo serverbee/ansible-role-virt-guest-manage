@@ -10,6 +10,9 @@
   loop_control:
     label: "{{ item.key }}"
   when: not result.list_vms is search('{{ item.key }}')
+  vars:
+    main_disk: "{{ item.value.disk | first }}"
+    main_interface: "{{ item.value.network | first }}"
 
 - name: Find temporary kickstart configuration
   find:
@@ -40,6 +43,8 @@
     command: define
     xml: "{{ lookup('template', 'vm-template.xml.j2') }}"
   loop: "{{ virt_guest_list|dict2items|json_query(jmesh_query) }}"
+  vars:
+    main_disk: "{{ item.value.disk | first }}"
 
 - name: Start virtual machine(s)
   virt:
