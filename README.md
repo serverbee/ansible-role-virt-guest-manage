@@ -1,8 +1,23 @@
 ## Virt guest manage role
 
-This role use [official ansible virt module](https://docs.ansible.com/ansible/2.9/modules/virt_module.html) for managing virtual machines supported by libvirt.
-So you can control all your vms directly via settings in group_vars or host_vars.
-The main feature of this role is parallel installation of all virtual machines which set in `virt_guest_list`.
+This role use [official ansible virt module](https://docs.ansible.com/ansible/2.9/modules/virt_module.html) for managing RHEL based virtual machines.
+So you can control all your VMs directly via settings in group_vars or host_vars.
+The main feature of this role is the parallel installation of all virtual machines which are set in `virt_guest_list`.
+
+#### To begin
+
+##### Update default values for your needs
+
+First of all you have to update `virt_guest_init_passwd` with setting a custom password.
+Second thing is you have to find and set the nearest mirror for downloading all components of RHEL based installator. 
+
+##### Out of the scope of this role
+
+This role can manage LVM based virtual disks for VMs but you have to create Physical Volume (PVS) and Volume Group (VGS) before using it.  
+Also there are two different options for virtual network interfaces of VMs. The first way is to use an existed and already configured Linux bridge  
+and the second one is to use [libvirt networking](https://wiki.libvirt.org/page/Networking). Anyway the last option can be managed with  
+`virt_network_list` directly from this role. 
+
 
 #### Variables
 
@@ -138,6 +153,26 @@ serverbee.qemu_kvm role
             model: e1000
         vnc_enable: true
 ```
+
+#### What else?
+
+##### Checking the progress of VM installation
+
+You can use `virsh` cli tool to see the list of all your VMs and to check the progress of each installation.  
+Usually you don't need this but if you can't ping your VM durring the installation then it may help.  
+Virsh command installs automatically as a dependency for this role. You can watch with using `console` option:
+
+```bash
+$ virsh list --all
+$ virsh console example-vm
+```
+
+##### Timeout to finish the installation
+
+There is a variable named as `virt_guest_kickstart_installation_timeout` and by default it set to 480 seconds.  
+If you have any problems with shutting down your VM before the finishing of your instalation then you have to increase the timeout.  
+Also it's better to set the nearest mirror at least in the same country to increase the downloading speed.  
+You can do this with changing `virt_guest_mirror` and `virt_guest_os_location` variables.
 
 ##### Extra vars to manage only one VM
 
