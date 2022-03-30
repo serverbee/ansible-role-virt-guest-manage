@@ -11,6 +11,13 @@
     src: vm-ks.cfg.j2
     dest: "{{ virt_guest_kickstart_config_dir }}/{{ item.key }}-ks.cfg"
 
+- name: Check and wait to re-run if internal http server is still running
+  wait_for:
+    port: "{{ virt_guest_kickstart_config_port }}"
+    timeout: "{{ virt_guest_kickstart_config_serve_timeout }}"
+    state: stopped
+    msg: "Port {{ virt_guest_kickstart_config_port }} is accessible, some application is still running and use it."
+
 - name: Run internal http server for serving ks configuration on el7
   shell:
     cmd: "nohup timeout {{ virt_guest_kickstart_config_serve_timeout }} python -m SimpleHTTPServer >/dev/null 2>&1 &"
