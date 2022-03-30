@@ -1,7 +1,8 @@
 ## Virt guest manage role
 
-This role use [official ansible virt module](https://docs.ansible.com/ansible/2.9/modules/virt_module.html) for managing RHEL based virtual machines.
-So you can control all your VMs directly via settings in group_vars or host_vars.
+This role uses [official ansible virt module](https://docs.ansible.com/ansible/2.9/modules/virt_module.html) for managing
+RHEL based virtual machines with using [KVM](http://www.linux-kvm.org) as a hypervisor. By default it uses AlmaLinux fork of RHEL.
+You can control all your VMs directly via settings in group_vars or host_vars.
 The main feature of this role is the parallel installation of all virtual machines which are set in `virt_guest_list`.
 
 #### To begin
@@ -9,14 +10,14 @@ The main feature of this role is the parallel installation of all virtual machin
 ##### Update default values for your needs
 
 First of all you have to update `virt_guest_init_passwd` with setting a custom password.
-Second thing is you have to find and set the nearest mirror for downloading all components of RHEL based installator. 
+Second thing is you have to find and set the nearest mirror for downloading all components of RHEL based installator.
 
 ##### Out of the scope of this role
 
-This role can manage LVM based virtual disks for VMs but you have to create Physical Volume (PVS) and Volume Group (VGS) before using it.  
-Also there are two different options for virtual network interfaces of VMs. The first way is to use an existed and already configured Linux bridge  
-and the second one is to use [libvirt networking](https://wiki.libvirt.org/page/Networking). Anyway the last option can be managed with  
-`virt_network_list` directly from this role. 
+This role can manage LVM based virtual disks for VMs but you have to create Physical Volume (PVS) and Volume Group (VGS) before using it.
+Also there are two different options for virtual network interfaces of VMs. The first way is to use an existed and already configured Linux bridge
+and the second one is to use [libvirt networking](https://wiki.libvirt.org/page/Networking). Anyway the last option can be managed with
+`virt_network_list` directly from this role.
 
 
 #### Variables
@@ -158,8 +159,8 @@ serverbee.qemu_kvm role
 
 ##### Checking the progress of VM installation
 
-You can use `virsh` cli tool to see the list of all your VMs and to check the progress of each installation.  
-Usually you don't need this but if you can't ping your VM durring the installation then it may help.  
+First of all you can check if your VM responces to ping requests. If it doesn't responce then
+you can use `virsh` cli tool to see the list of all your VMs and to check the progress of each installation.
 Virsh command installs automatically as a dependency for this role. You can watch with using `console` option:
 
 ```bash
@@ -169,16 +170,16 @@ $ virsh console example-vm
 
 ##### Timeout to finish the installation
 
-There is a variable named as `virt_guest_kickstart_installation_timeout` and by default it set to 480 seconds.  
-If you have any problems with shutting down your VM before the finishing of your instalation then you have to increase the timeout.  
-Also it's better to set the nearest mirror at least in the same country to increase the downloading speed.  
+There is a variable named as `virt_guest_kickstart_installation_timeout` and by default it set to 480 seconds.
+If you have any problems with shutting down your VM before the finishing of your instalation then you have to increase the timeout.
+Also it's better to set the nearest mirror at least in the same country with your hosting provider to increase a downloading speed.
 You can do this with changing `virt_guest_mirror` and `virt_guest_os_location` variables.
 
 ##### Extra vars to manage only one VM
 
-This option can be very useful if you have many virtual machines but want to manage only one of them.  
-It will run Ansible playbook faster and without applying some things for other virtual machines.  
-To do that you have to set an extra variable named `vm` when you apply your playbook:
+This option can be very useful if you have many virtual machines but want to manage only one of them.
+It will run Ansible playbook faster and without applying some things for other virtual machines.
+To do this you have to set an extra variable named `vm` when you apply your playbook:
 
 ```bash
 $ ansible-playbook virt-guest-manage.yml --extra-vars vm=example-vm
@@ -186,6 +187,18 @@ $ ansible-playbook virt-guest-manage.yml --extra-vars vm=example-vm
 
 It supports to pass only one name of virtual machine per one time.
 
+##### Re-run an installation of VM
+
+If you was playing with something before and want to re-run an installation again then first you have to remove all existing parts manually:
+
+```bash
+$ virsh list --all
+$ virsh destroy example-vm
+$ virsh undefine example-vm
+$ lvremove vg_local/lv_vm_example
+```
+
+This role doesn't support a re-installing of VMs automatically to prevent any removing of existing and needed data.
 
 #### License
 
