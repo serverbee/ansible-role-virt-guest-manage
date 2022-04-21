@@ -1,0 +1,5 @@
+---
+dependent_packages:
+  - coreutils
+  - python3-libvirt
+  - python3-lxml
