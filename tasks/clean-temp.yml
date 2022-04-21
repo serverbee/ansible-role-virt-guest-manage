@@ -1,0 +1,24 @@
+---
+
+- name: Find temporary kickstart configuration
+  find:
+    paths: "{{ virt_guest_kickstart_config_dir }}"
+    patterns: "*.cfg"
+  register: ks_to_delete
+
+- name: Remove temporary kickstart configuration
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ ks_to_delete.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+  when: ks_to_delete.files is defined
+
+- name: Remove a firewall rule for using ks configuration
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: "{{ virt_guest_kickstart_config_port }}"
+    jump: ACCEPT
+    state: absent

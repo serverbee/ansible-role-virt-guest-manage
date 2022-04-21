@@ -1,0 +1,21 @@
+---
+
+- name: Send Crl+Alt+Del for {{ vm_name }} virtual machine
+  command:
+    cmd: "/usr/bin/virsh send-key {{ item.key }} KEY_LEFTCTRL KEY_LEFTALT KEY_DELETE"
+  notify:
+   - Print init passwd
+
+- name: Wait for power off state of {{ vm_name }}
+  virt:
+    name: "{{ item.key }}"
+    command: status
+  register: vm
+  until: vm.status == "shutdown"
+  retries: 10
+  delay: 1
+
+- name: Undefine installation xml for {{ vm_name }} virtual machine
+  virt:
+    name: "{{ item.key }}"
+    command: undefine

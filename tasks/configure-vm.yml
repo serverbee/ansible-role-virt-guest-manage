@@ -1,0 +1,54 @@
+---
+
+- include_tasks: kickstart-inst.yml
+  loop: "{{ vm_list }}"
+  loop_control:
+    label: "{{ item.key }}"
+  vars:
+    vm_name: "{{ item.key }}"
+    main_disk: "{{ item.value.disk | first }}"
+    main_interface: "{{ item.value.network | first }}"
+  when: not result.list_vms is search('{{ item.key }}')
+
+- name: Wait to finish the installation
+  wait_for:
+    timeout: "{{ virt_guest_kickstart_installation_timeout }}"
+  delegate_to: localhost
+  vars:
+    ansible_become: no
+  when: not_existing_vms is defined
+
+- include_tasks: kickstart-post.yml
+  loop: "{{ vm_list }}"
+  loop_control:
+    label: "{{ item.key }}"
+  vars:
+    vm_name: "{{ item.key }}"
+  when: not result.list_vms is search('{{ item.key }}')
+
+- name: Define non installation xml for virtual machine(s)
+  virt:
+    name: "{{ item.key }}"
+    command: define
+    xml: "{{ lookup('template', 'vm-template.xml.j2') }}"
+  loop: "{{ vm_list }}"
+  vars:
+    main_disk: "{{ item.value.disk | first }}"
+
+- name: Start virtual machine(s)
+  virt:
+    name: "{{ item.key }}"
+    state: running
+  loop: "{{ vm_list }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Enable autostart for virtual machine(s)
+  virt:
+    name: "{{ item.key }}"
+    command: status
+    autostart: true
+  loop: "{{ vm_list }}"
+  loop_control:
+    label: "{{ item.key }}"
+  when: item.value.autostart|default(true)|bool

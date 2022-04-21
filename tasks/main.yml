@@ -1,5 +1,5 @@
 ---
 
 - include: prepare.yml
-- include: configure_vm.yml
-
+- include: configure-vm.yml
+- include: clean-temp.yml

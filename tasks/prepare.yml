@@ -2,6 +2,8 @@
 
 - name: Select specific virtual machine if it set
   set_fact:
+    vm_list: "{{ virt_guest_list|dict2items|json_query(jmesh_query) }}"
+  vars:
     jmesh_query: >-
       {%- if vm is defined -%}
       [?key=='{{ vm }}']
@@ -43,5 +45,20 @@
   vars:
     vm_name: "{{ item.key }}"
     disk_list: "{{ item.value.disk }}"
-  loop: "{{ virt_guest_list|dict2items|json_query(jmesh_query) }}"
+  loop: "{{ vm_list }}"
   when: item.value.disk is defined
+
+- name: Check if virtual machine(s) exists
+  virt:
+    command: list_vms
+  register: result
+
+- set_fact:
+    not_existing_vms: true
+  loop: "{{ vm_list }}"
+  loop_control:
+    label: "{{ item.key }}"
+  when: not result.list_vms is search('{{ item.key }}')
+
+- include_tasks: kickstart-pre.yml
+  when: not_existing_vms is defined

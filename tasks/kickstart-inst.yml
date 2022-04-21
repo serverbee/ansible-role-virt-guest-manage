@@ -1,0 +1,17 @@
+---
+
+- name: Create kickstart configuration for {{ vm_name }}
+  template:
+    src: vm-ks.cfg.j2
+    dest: "{{ virt_guest_kickstart_config_dir }}/{{ item.key }}-ks.cfg"
+
+- name: Create {{ vm_name }} virtual machine
+  virt:
+    name: "{{ item.key }}"
+    command: define
+    xml: "{{ lookup('template', 'vm-install-template.xml.j2') }}"
+
+- name: Start installation for {{ vm_name }} virtual machine
+  virt:
+    name: "{{ item.key }}"
+    state: running

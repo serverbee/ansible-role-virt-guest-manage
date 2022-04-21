@@ -6,11 +6,6 @@
     state: directory
     mode: 0700
 
-- name: Create kickstart configuration
-  template:
-    src: vm-ks.cfg.j2
-    dest: "{{ virt_guest_kickstart_config_dir }}/{{ item.key }}-ks.cfg"
-
 - name: Check and wait to re-run if internal http server is still running
   wait_for:
     port: "{{ virt_guest_kickstart_config_port }}"
@@ -50,41 +45,3 @@
     url: "{{ virt_guest_os_location }}/images/pxeboot/initrd.img"
     dest: "/var/lib/libvirt/boot/virtguestinst-initrd.img"
     force: yes
-
-- name: Create virtual machine(s)
-  virt:
-    name: "{{ item.key }}"
-    command: define
-    xml: "{{ lookup('template', 'vm-install-template.xml.j2') }}"
-  notify:
-   - Print init passwd
-
-- name: Start installation of virtual machine(s)
-  virt:
-    name: "{{ item.key }}"
-    state: running
-
-- name: Wait to finish the installation
-  wait_for:
-    timeout: "{{ virt_guest_kickstart_installation_timeout }}"
-  delegate_to: localhost
-  vars:
-    ansible_become: no
-
-- name: Send Crl+Alt+Del for virtual machine(s)
-  command:
-    cmd: "/usr/bin/virsh send-key {{ item.key }} KEY_LEFTCTRL KEY_LEFTALT KEY_DELETE"
-
-- name: Wait for power off state
-  virt:
-    name: "{{ item.key }}"
-    command: status
-  register: vm
-  until: vm.status == "shutdown"
-  retries: 10
-  delay: 1
-
-- name: Undefine installation xml of virtual machine(s)
-  virt:
-    name: "{{ item.key }}"
-    command: undefine
