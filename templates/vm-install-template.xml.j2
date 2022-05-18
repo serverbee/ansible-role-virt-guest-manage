@@ -13,7 +13,7 @@
     <partition>/machine</partition>
   </resource>
   <os>
-{% if ansible_distribution == "Fedora" %}
+{% if ansible_distribution == "Fedora" or ansible_distribution_major_version == "9" %}
     <type>hvm</type>
 {% endif %}
 {% if ansible_distribution_major_version == "6" %}
