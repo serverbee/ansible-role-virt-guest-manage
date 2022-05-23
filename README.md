@@ -7,6 +7,13 @@ The main feature of this role is the parallel installation of all virtual machin
 
 #### To begin
 
+##### Supported distro versions at the virtual machine level
+
+* CentOS el6 (not tested with latest role versions)
+* CentOS el7
+* AlmaLinux el8
+* AlmaLinux el9
+
 ##### Update default values for your needs
 
 First of all you have to update `virt_guest_init_passwd` with setting a custom password.
@@ -26,7 +33,7 @@ and the second one is to use [libvirt networking](https://wiki.libvirt.org/page/
 
 * `virt_guest_dependency_qemu_kvm_role`: [optional, default `true`]: Whether enable a dependency role for qemu-kvm
 * `virt_guest_mirror`: [default: `http://repo.almalinux.org`]: Almalinux mirror what will be used to install OS
-* `virt_guest_os_location`: [default: `{{ virt_guest_mirror }}/almalinux/8/BaseOS/x86_64/os`]: Location path where Almalinux os componnets stored
+* `virt_guest_os_location`: [default: `{{ virt_guest_mirror }}/almalinux/9/BaseOS/x86_64/os`]: Location path where Almalinux os componnets stored
 * `virt_guest_kickstart_config_dir`: [default: `/tmp/kickstart`]: The path where kickstart files with be created
 * `virt_guest_kickstart_config_port`: [default: `8000`]: The port for downloading kickstart configuration durring an installation
 * `virt_guest_kickstart_config_url`: [default: `ip of a Hypervisor`]: The url for downloading kickstart configuration durring an installation

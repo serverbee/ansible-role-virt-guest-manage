@@ -10,9 +10,10 @@
 {% endif %}
 {% if ansible_distribution_major_version == "6" %}
     <type arch='x86_64' machine='rhel6.6.0'>hvm</type>
-{% endif %}
-{% if ansible_distribution_major_version == "7" or ansible_distribution_major_version == "8" %}
+{% elif ansible_distribution_major_version == "7" or ansible_distribution_major_version == "8" %}
     <type arch='x86_64' machine='pc-i440fx-rhel7.4.0'>hvm</type>
+{% elif ansible_distribution_major_version == "9" %}
+    <type arch='x86_64' machine='pc-i440fx-rhel7.6.0'>hvm</type>
 {% endif %}
     <boot dev='hd'/>
   </os>

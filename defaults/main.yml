@@ -2,7 +2,7 @@
 
 virt_guest_dependency_qemu_kvm_role: true
 virt_guest_mirror: http://repo.almalinux.org
-virt_guest_os_location: "{{ virt_guest_mirror }}/almalinux/8/BaseOS/x86_64/os"
+virt_guest_os_location: "{{ virt_guest_mirror }}/almalinux/9/BaseOS/x86_64/os"
 
 virt_qemu_images_location: /var/lib/libvirt/images
 

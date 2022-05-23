@@ -1,5 +1,5 @@
 #version=RHEL7+
-{% if virt_guest_os_location | regex_findall('\\d') | first == "8" %}
+{% if virt_guest_os_location | regex_findall('\\d') | first == "8" or virt_guest_os_location | regex_findall('\\d') | first == "9" %}
 # Install minimal environment
 %packages
 @^minimal-environment
@@ -24,13 +24,13 @@ lang en_US.UTF-8
 {% if item.value.network[main_interface].ip is not defined %}
 {% if virt_guest_os_location | regex_findall('\\d') | first == "7" %}
 network --bootproto=dhcp --device=eth0 --noipv6 --activate
-{% elif virt_guest_os_location | regex_findall('\\d') | first == "8" %}
+{% elif virt_guest_os_location | regex_findall('\\d') | first == "8" or virt_guest_os_location | regex_findall('\\d') | first == "9" %}
 network --bootproto=dhcp --device=ens7 --noipv6 --activate
 {% endif %}
 {% else %}
 {% if virt_guest_os_location | regex_findall('\\d') | first == "7" %}
 network --bootproto=static --device=eth0 --ip={{ item.value.network[main_interface].ip }} --netmask={{ item.value.network[main_interface].netmask }} --gateway={{ item.value.network[main_interface].gateway }} --nameserver={{ item.value.network[main_interface].dns }} --noipv6 --activate
-{% elif virt_guest_os_location | regex_findall('\\d') | first == "8" %}
+{% elif virt_guest_os_location | regex_findall('\\d') | first == "8" or virt_guest_os_location | regex_findall('\\d') | first == "9" %}
 network --bootproto=static --device=ens7 --ip={{ item.value.network[main_interface].ip }} --netmask={{ item.value.network[main_interface].netmask }} --gateway={{ item.value.network[main_interface].gateway }} --nameserver={{ item.value.network[main_interface].dns }} --noipv6 --activate
 {% endif %}
 {% endif %}
